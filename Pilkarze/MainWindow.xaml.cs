@@ -9,8 +9,8 @@ namespace Lab_02_4
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FileRepository _fileRepository;
-        private List<Piłkarz> pilkarze;
+        private readonly FileRepository _fileRepository;
+        private readonly List<Piłkarz> pilkarze;
 
         public MainWindow()
         {
@@ -27,7 +27,7 @@ namespace Lab_02_4
             }
         }
 
-        private void button_dodaj_Click(object sender, RoutedEventArgs e)
+        private void Button_dodaj_Click(object sender, RoutedEventArgs e)
         {
             Piłkarz piłkarz = new Piłkarz
             {
@@ -42,36 +42,26 @@ namespace Lab_02_4
             _fileRepository.Save(pilkarze);
         }
 
-
-        private bool Test(int n)
-        {
-            if (n % 2 == 0)
-            {
-                MessageBox.Show("test: true");
-                return true;
-            }
-            MessageBox.Show("test: false");
-            return false;
-        }
-
-        private void button_edytuj_Click(object sender, RoutedEventArgs e)
+        private void Button_edytuj_Click(object sender, RoutedEventArgs e)
         {
             var index = listBox_pilkarze.SelectedIndex;
             if (index > -1)
             {
-                var p1 = new Piłkarz(listBox_pilkarze.SelectedItem as Piłkarz);
-                p1.Nazwisko = textBox_nazwisko.Text;
-                p1.Imię = textBox_imie.Text;
-                p1.Waga = textBox_waga.Text.ToInt();
-                p1.Wzrost = textBox_wzrost.Text.ToInt();
-                p1.Pozycja = (Pozycja)comboBox_pozycje.SelectedIndex;
+                var p1 = new Piłkarz(listBox_pilkarze.SelectedItem as Piłkarz)
+                {
+                    Nazwisko = textBox_nazwisko.Text,
+                    Imię = textBox_imie.Text,
+                    Waga = textBox_waga.Text.ToInt(),
+                    Wzrost = textBox_wzrost.Text.ToInt(),
+                    Pozycja = (Pozycja)comboBox_pozycje.SelectedIndex
+                };
                 listBox_pilkarze.Items[index] = p1;
                 pilkarze[index] = p1;
                 _fileRepository.Save(pilkarze);
             }
         }
 
-        private void listBox_pilkarze_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListBox_pilkarze_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listBox_pilkarze.SelectedIndex > -1)
             {
@@ -84,7 +74,7 @@ namespace Lab_02_4
             }
         }
 
-        private void button_usun_Click(object sender, RoutedEventArgs e)
+        private void Button_usun_Click(object sender, RoutedEventArgs e)
         {
             var index = listBox_pilkarze.SelectedIndex;
             if (index > -1)
