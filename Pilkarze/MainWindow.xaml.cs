@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Lab_02_4
 {
@@ -20,9 +9,22 @@ namespace Lab_02_4
     /// </summary>
     public partial class MainWindow : Window
     {
+        private FileRepository _fileRepository;
+        private List<Piłkarz> pilkarze;
+
         public MainWindow()
         {
             InitializeComponent();
+            _fileRepository = new FileRepository();
+            pilkarze = _fileRepository.GetAll();
+
+            if (pilkarze.Count > 0)
+            {
+                foreach (var pilkarz in pilkarze)
+                {
+                    listBox_pilkarze.Items.Add(pilkarz);
+                }
+            }
         }
 
         private void button_dodaj_Click(object sender, RoutedEventArgs e)
@@ -36,6 +38,8 @@ namespace Lab_02_4
                 Pozycja = (Pozycja)comboBox_pozycje.SelectedIndex
             };
             listBox_pilkarze.Items.Add(piłkarz);
+            pilkarze.Add(piłkarz);
+            _fileRepository.Save(pilkarze);
         }
 
 
@@ -52,8 +56,8 @@ namespace Lab_02_4
 
         private void button_edytuj_Click(object sender, RoutedEventArgs e)
         {
-
-            if (listBox_pilkarze.SelectedIndex > -1)
+            var index = listBox_pilkarze.SelectedIndex;
+            if (index > -1)
             {
                 var p1 = new Piłkarz(listBox_pilkarze.SelectedItem as Piłkarz);
                 p1.Nazwisko = textBox_nazwisko.Text;
@@ -61,7 +65,9 @@ namespace Lab_02_4
                 p1.Waga = textBox_waga.Text.ToInt();
                 p1.Wzrost = textBox_wzrost.Text.ToInt();
                 p1.Pozycja = (Pozycja)comboBox_pozycje.SelectedIndex;
-                listBox_pilkarze.Items[listBox_pilkarze.SelectedIndex] = p1;
+                listBox_pilkarze.Items[index] = p1;
+                pilkarze[index] = p1;
+                _fileRepository.Save(pilkarze);
             }
         }
 
@@ -80,9 +86,12 @@ namespace Lab_02_4
 
         private void button_usun_Click(object sender, RoutedEventArgs e)
         {
-            if (listBox_pilkarze.SelectedIndex > -1)
+            var index = listBox_pilkarze.SelectedIndex;
+            if (index > -1)
             {
-                listBox_pilkarze.Items.RemoveAt(listBox_pilkarze.SelectedIndex);
+                listBox_pilkarze.Items.RemoveAt(index);
+                pilkarze.RemoveAt(index);
+                _fileRepository.Save(pilkarze);
                 textBox_imie.Text = "Imię";
                 textBox_nazwisko.Text = "Nazwisko";
                 textBox_waga.Text = "Waga";
